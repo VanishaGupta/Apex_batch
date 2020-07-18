@@ -1,0 +1,25 @@
+global class LeadProcess implements Database.Batchable<sObject> {
+    
+    global Database.QueryLocator start(Database.BatchableContext bc)
+    {
+       return Database.getQueryLocator('Select ID,Name, LeadSource, Rating from Lead WHERE Country = \'US\' and City = \'New York\'');
+    }
+    
+    global void execute(Database.BatchableContext bc, List<Lead> scope)
+    {
+        List<Lead> ld=new List<Lead>();
+        System.debug('Lead list size: '+scope.size());
+        for (Lead lead: scope)
+        {
+            lead.LeadSource='Web';
+            lead.Rating='Hot';
+        }
+        update scope;
+    }
+    
+    global void finish(Database.BatchableContext bc)
+    {
+        
+    }
+
+}

@@ -1,0 +1,32 @@
+@isTest
+public class LeadProcessTest {
+	
+    @testSetup static void setup() {
+        List<Lead> leads=new List<Lead>();
+        for(Integer i=0;i<200;i++){
+         	Lead ld=new Lead();
+            ld.FirstName='Test'+i;
+            ld.LastName='Batch';
+            ld.Company='ABC Ltd';
+            ld.Country='US';
+            ld.City='New York';
+            leads.add(ld);
+        }
+        insert leads; //inserting 200 leads
+     }
+    
+    @isTest static void testMethod1() {
+        
+        //executing batch class
+        Test.startTest();
+        LeadProcess ld=new LeadProcess();
+        Database.executeBatch(ld);
+        Test.stopTest();
+        
+        List<Lead> leads1=[Select ID,LeadSource,Rating from Lead where Country='US' AND City='New York'];
+        System.assertEquals(200, leads1.size()); //assert on size of list.
+        System.assertEquals('Web', leads1[1].LeadSource); //assert on first element of list to check whether lead source is updated.
+        System.assertEquals('Hot', leads1[1].Rating); //assert on first element of list to check whether rating is updated.
+    }  
+
+}
